@@ -37,7 +37,7 @@ $InitPHP_conf['log_dir'] = '/home/admin/logs/'; //日志目录,必须配置
  * 5. html: user-index-run.htm?uid=100
  * 6. 开启PATH需要开启APACHE的rewrite模块，详细使用会在文档中体现
  */
-$InitPHP_conf['isuri'] = 'default'; 
+$InitPHP_conf['isuri'] = 'rewrite'; 
 /**
  * 是否开启输出自动过滤
  * 1. 对多人合作，安全性可控比较差的项目建议开启
@@ -67,8 +67,8 @@ $InitPHP_conf['db']['driver']   = 'mysqli'; //选择不同的数据库DB 引擎�
 $InitPHP_conf['db']['default']['db_type']                   = 0; //0-单个服务器，1-读写分离，2-随机
 $InitPHP_conf['db']['default'][0]['host']                   = 'localhost'; //主机
 $InitPHP_conf['db']['default'][0]['username']               = 'root'; //数据库用户名
-$InitPHP_conf['db']['default'][0]['password']               = ''; //数据库密码
-$InitPHP_conf['db']['default'][0]['database']               = 'test'; //数据库
+$InitPHP_conf['db']['default'][0]['password']               = '123456'; //数据库密码
+$InitPHP_conf['db']['default'][0]['database']               = 'invest'; //数据库
 $InitPHP_conf['db']['default'][0]['charset']                = 'utf8'; //数据库编码   
 $InitPHP_conf['db']['default'][0]['pconnect']               = 0; //是否持久链接
 
@@ -78,14 +78,14 @@ $InitPHP_conf['db']['test']['db_type']                      = 0; //0-单个服�
 $InitPHP_conf['db']['test'][0]['host']                      = '127.0.0.1'; //主机
 $InitPHP_conf['db']['test'][0]['username']                  = 'root'; //数据库用户名
 $InitPHP_conf['db']['test'][0]['password']                  = ''; //数据库密码
-$InitPHP_conf['db']['test'][0]['database']                  = 'test'; //数据库
+$InitPHP_conf['db']['test'][0]['database']                  = ''; //数据库
 $InitPHP_conf['db']['test'][0]['charset']                   = 'utf8'; //数据库编码   
 $InitPHP_conf['db']['test'][0]['pconnect']                  = 0; //是否持久链接
 
 $InitPHP_conf['db']['test'][1]['host']                      = '127.0.0.1'; //主机
 $InitPHP_conf['db']['test'][1]['username']                  = 'root'; //数据库用户名
 $InitPHP_conf['db']['test'][1]['password']                  = ''; //数据库密码
-$InitPHP_conf['db']['test'][1]['database']                  = 't1'; //数据库
+$InitPHP_conf['db']['test'][1]['database']                  = ''; //数据库
 $InitPHP_conf['db']['test'][1]['charset']                   = 'utf8'; //数据库编码   
 $InitPHP_conf['db']['test'][1]['pconnect']                  = 0; //是否持久链接
 

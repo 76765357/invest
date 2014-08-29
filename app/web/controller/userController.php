@@ -1,34 +1,38 @@
 <?php
 /**
- * DEMO
+ * userController
  * @author wanglong 
  */
 class userController extends Controller {
 	
-	public $initphp_list = array('test'); //Action白名单
+	public $initphp_list = array('reg','log'); //Action白名单
 
 	public function run() {    
-		$this->view->display("index_run"); //展示模板页面
+		//$this->view->display("index_run"); //展示模板页面
 	}
 	
-	public function test() {
-		echo 12;	
-	}
-	
-	public function post() {
-		$user = $this->controller->get_gp(array('username', 'password'));
-		$result = $this->_getUserDao()->addUser($user);
+	public function reg() {
+		$reg = $this->controller->get_gp(array('phone', 'password'));
+		$result = $this->_getUserDao()->addUser($reg);
 		if ($result > 0) {
-			echo '新增用户成功 ID:' . $result;
+			$return_data = array('success'=>true,'userid'=>$result);
 		} else {
-			echo '新增失败';
+			$return_data = array('success'=>false);
 		}
-		
+		exit(json_encode($return_data));
+	}
+
+	public function log() {
+		$user = $this->controller->get_gp(array('phone', 'password'));
+		$result = $this->_getUserDao()->getUser($user);
+		if ($result > 0) {
+			$return_data = array('success'=>true,'userid'=>$result['id']);
+		} else {
+			$return_data = array('success'=>false);
+		}
+		exit(json_encode($return_data));
 	}
 	
-	/**
-	 * @return userDao
-	 */
 	private function _getUserDao() {
 		return InitPHP::getDao("user");
 	}
