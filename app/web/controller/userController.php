@@ -13,11 +13,17 @@ class userController extends Controller {
 	
 	public function reg() {
 		$reg = $this->controller->get_gp(array('phone', 'password'));
-		$result = $this->_getUserDao()->addUser($reg);
-		if ($result > 0) {
-			$return_data = array('success'=>true,'userid'=>$result);
-		} else {
-			$return_data = array('success'=>false);
+		$user = $this->controller->get_gp(array('phone'));
+		$result = $this->_getUserDao()->getUser($user);
+		if($result > 0){
+				$return_data = array('success'=>false,'msg','注册失败,原因:该手机号已存在');
+		}else{
+			$result = $this->_getUserDao()->addUser($reg);
+			if ($result > 0) {
+				$return_data = array('success'=>true,'userid'=>$result);
+			} else {
+				$return_data = array('success'=>false,'msg','注册失败,原因:数据库插入错误');
+			}
 		}
 		exit(json_encode($return_data));
 	}

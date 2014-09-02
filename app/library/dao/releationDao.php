@@ -9,7 +9,7 @@ class releationDao extends Dao {
 		return $this->dao->db->insert($rel, $this->table_name);
 	}
 
-	public function getAll() {
-		return $this->dao->db->get_all($this->table_name);
+	public function del($cond) {
+		return $this->dao->db->delete_by_field($cond,$this->table_name);
 	}
 }
