@@ -5,7 +5,7 @@
  */
 class userController extends Controller {
 	
-	public $initphp_list = array('reg','log'); //Action白名单
+	public $initphp_list = array('reg','login','get'); //Action白名单
 
 	public function run() {    
 		//$this->view->display("index_run"); //展示模板页面
@@ -28,17 +28,29 @@ class userController extends Controller {
 		exit(json_encode($return_data));
 	}
 
-	public function log() {
+	public function login() {
 		$user = $this->controller->get_gp(array('phone', 'password'));
 		$result = $this->_getUserDao()->getUser($user);
 		if ($result > 0) {
-			$return_data = array('success'=>true,'userid'=>$result['id']);
+			$return_data = array('success'=>true,'userid'=>$result['userid']);
 		} else {
 			$return_data = array('success'=>false);
 		}
 		exit(json_encode($return_data));
 	}
 	
+	public function get(){
+		$user = $this->controller->get_gp(array('userid'));
+		$result = $this->_getUserDao()->getUser($user); 
+		if ($result >0){
+			$return_data =array('success'=>true,'result'=>$result);
+		} else {
+			$return_data = array('success'=>false);
+		}
+		exit(json_encode($return_data));
+	}	
+
+
 	private function _getUserDao() {
 		return InitPHP::getDao("user");
 	}
