@@ -23,7 +23,19 @@ class controllerInit extends filterInit{
 		$this->filter(); //全局过滤函数，对GET POST数据自动过，InitPHP采取非常严格的数据过滤机制
 		$this->set_token(); //生成全局TOKEN值，防止CRsf攻击
 	}
+
+	//不转码的ajax_return
+	public function ajax_exit($status, $result = array()){
+		$return_data = array('status' => $status, 'result' => $result);
+		exit(json_encode($return_data,JSON_UNESCAPED_UNICODE));
+	}
 	
+	//不转码的ajax_return
+	public function ajax_msg($status, $msg){
+		$return_data = array('status' => $status, 'msg' => $msg);
+		exit(json_encode($return_data,JSON_UNESCAPED_UNICODE));
+	}
+
 	/**
 	 *	控制器 AJAX脚本输出
 	 *  Controller中使用方法：$this->controller->ajax_return()

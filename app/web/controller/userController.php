@@ -5,7 +5,7 @@
  */
 class userController extends Controller {
 	
-	public $initphp_list = array('reg','login','get'); //Action白名单
+	public $initphp_list = array('reg','login','get','mod','attention')); //Action白名单
 
 	public function run() {    
 		//$this->view->display("index_run"); //展示模板页面
@@ -16,42 +16,60 @@ class userController extends Controller {
 		$user = $this->controller->get_gp(array('phone'));
 		$result = $this->_getUserDao()->getUser($user);
 		if($result > 0){
-				$return_data = array('success'=>false,'msg','注册失败,原因:该手机号已存在');
+				$this->controller->ajax_msg('false','注册失败,原因:该手机号已存在');
 		}else{
 			$result = $this->_getUserDao()->addUser($reg);
 			if ($result > 0) {
-				$return_data = array('success'=>true,'userid'=>$result);
+				$this->controller->ajax_exit('true',array('userid'=>$result));
 			} else {
-				$return_data = array('success'=>false,'msg','注册失败,原因:数据库插入错误');
+				$this->controller->ajax_msg('false','注册失败,原因:数据库插入错误');
 			}
 		}
-		exit(json_encode($return_data));
 	}
 
 	public function login() {
 		$user = $this->controller->get_gp(array('phone', 'password'));
 		$result = $this->_getUserDao()->getUser($user);
 		if ($result > 0) {
-			$return_data = array('success'=>true,'userid'=>$result['userid']);
+			$this->controller->ajax_exit('true',array('userid'=>$result['id']));
 		} else {
-			$return_data = array('success'=>false);
+			$this->controller->ajax_msg('false','注册失败,原因:数据库插入错误');
 		}
-		exit(json_encode($return_data));
 	}
 	
-	public function get(){
+	public function get() {
 		$user = $this->controller->get_gp(array('userid'));
-		$result = $this->_getUserDao()->getUser($user); 
-		if ($result >0){
-			$return_data =array('success'=>true,'result'=>$result);
+		$result = $this->_getUserDao()->getUser($user);
+		if ($result) {
+			$this->controller->ajax_exit('true',$result);
 		} else {
-			$return_data = array('success'=>false);
+			$this->controller->ajax_msg('false','失败,原因:没有数据');
 		}
-		exit(json_encode($return_data));
-	}	
-
+	}
+	
+	public function attention(){
+		$att = $this->controller->get_gp(array('userid','otheruserid'));
+		$record = $this->_getRealeationDao()->get($att);
+		if($record && $record['stat'] == 1){
+			$result = $this->_getRealeationDao()->update(array('stat'=>0),$att);
+		}else if($record && $record['stat'] == 0){
+			$result = $this->_getRealeationDao()->update(array('stat'=>1),$att);
+		}else{
+			$att['stat'] = 1;//关注:1
+			$result = $this->_getRealeationDao()->add($att);
+		}
+		if ($result > 0) {
+			$this->controller->ajax_exit('true');
+		} else {
+			$this->controller->ajax_msg('false','注册失败,原因:数据库错误');
+		}
+	}
 
 	private function _getUserDao() {
 		return InitPHP::getDao("user");
+	}
+
+	private function _getRealeationDao() {
+		return InitPHP::getDao("releation");
 	}
 } 

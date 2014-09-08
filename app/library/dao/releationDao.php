@@ -12,4 +12,12 @@ class releationDao extends Dao {
 	public function del($cond) {
 		return $this->dao->db->delete_by_field($cond,$this->table_name);
 	}
+
+	public function update($data,$cond) {
+		return $this->dao->db->update_by_field($data, $cond, $this->table_name); //根据条件更新数据
+	}
+
+	public function get($cond) {
+		return $this->dao->db->get_one_by_field($cond, $this->table_name);
+	}
 }

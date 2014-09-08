@@ -2,7 +2,7 @@
 class consultTypeDao extends Dao {
 	
 	public $table_name = 'consult_type';
-	private $fields = "id,name,content";
+	private $fields = "typeid,title,content";
 	
 	public function add($consult) {
 		$consult = $this->dao->db->build_key($consult, $this->fields);
@@ -10,6 +10,6 @@ class consultTypeDao extends Dao {
 	}
 
 	public function getAll() {
-		return $this->dao->db->get_all($this->table_name);
+		return $this->dao->db->get_all($this->table_name, 20, 0, array(), 'typeid', 'DESC');
 	}
 }
