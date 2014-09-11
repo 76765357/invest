@@ -16,11 +16,10 @@ class projectController extends Controller {
 		$project = $this->controller->get_gp(array('userid', 'name','introduction','bestside','bestside','isoutside'));
 		$result = $this->_getProjectDao()->add($project);
 		if ($result > 0) {
-			$return_data = array('success'=>true);
+			$this->controller->ajax_exit('true');
 		} else {
-			$return_data = array('success'=>false,'msg','项目添加失败,原因:数据库插入错误');
+			$this->controller->ajax_exit('false','项目添加失败,原因:数据库插入错误');
 		}
-		exit(json_encode($return_data));
 	}
 
 	//取得项目

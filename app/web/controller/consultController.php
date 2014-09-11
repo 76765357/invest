@@ -85,7 +85,7 @@ class consultController extends Controller {
 		$zxid = $this->_getConsultDao()->add($consult);
 		if ($zxid > 0) {
 			$gp['zxid'] = $zxid;
-			$result = $this->_getMsgDao()->add($gp);
+			$result = $this->_getPubDao()->add($gp);
 			$reArr = array('zxid'=>$result);
 			$this->controller->ajax_exit('true');
 		} else {
