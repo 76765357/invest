@@ -45,13 +45,12 @@ class userController extends Controller {
 	}
 
 	public function login() {
-		phpinfo();
 		$user = $this->controller->get_gp(array('phone', 'password'));
 		$result = $this->_getUserDao()->getUser($user);
 		if ($result > 0) {
 			$this->controller->ajax_exit('true',array('userid'=>$result['id']));
 		} else {
-			$this->controller->ajax_msg('false','注册失败,原因:数据库插入错误');
+			$this->controller->ajax_msg('false','登陆失败,原因:没有这个用户');
 		}
 	}
 	
