@@ -45,6 +45,7 @@ class userController extends Controller {
 	}
 
 	public function login() {
+		phpinfo();
 		$user = $this->controller->get_gp(array('phone', 'password'));
 		$result = $this->_getUserDao()->getUser($user);
 		if ($result > 0) {
