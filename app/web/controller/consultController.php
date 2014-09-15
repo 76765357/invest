@@ -41,7 +41,7 @@ class consultController extends Controller {
 		$types = $this->_getTypeDao()->getAll();
 		$reArr = array();
 		if($types[0]){
-			$reArr['messagearr'] = array();
+			$reArr['msgarr'] = array();
 			foreach($types[0] as $v){
 				$reArr['list'][] = $v;
 			}
@@ -66,19 +66,36 @@ class consultController extends Controller {
 	}
 
 	public function add_msg(){
-		$gp = $this->controller->get_gp(array('message', 'userid','lastdate'));
-		$consult = array('userid'=>$gp['userid'],'zxtype'=>MSG_CON);
-		$zxid = $this->_getConsultDao()->add($consult);
-		if ($zxid > 0) {
-			$gp['zxid'] = $zxid;
-			$result = $this->_getMsgDao()->add($gp);
-			$reArr = array('zxid'=>$result);
-			$this->controller->ajax_exit('true',$reArr);
-		} else {
-			$this->controller->ajax_exit('false');
+		$msg = $this->controller->get_gp(array('message'));
+		$fromto = $this->controller->get_gp(array('from','to','lastdate'));
+		if($msg['message'] !=''){
+			$consult = array('userid'=>$fromto['from'],'zxtype'=>MSG_CON);
+			$zxid = $this->_getConsultDao()->add($consult);
+			if ($zxid > 0) {
+				$gp = $msg + $fromto;
+				$gp['zxid'] = $zxid;
+				$result = $this->_getMsgDao()->add($gp);
+				$reArr = array('zxid'=>$result);
+				$this->output_pub_msg();
+			} else {
+				$this->controller->ajax_exit('false');
+			}
+		}else{
+				$this->output_pub_msg();
 		}
 	}
 	
+	public function output_pub_msg(){
+		$fromto = $this->controller->get_gp(array('from','to','lastdate'));
+		$cond = array('from'=>$fromto['from'],'to'=>$fromto['to']);
+		$msg = $this->_getMsgDao()->getByField($cond);
+		$data = array();
+		foreach($msg[0] as $v){
+			$data['messagearr'][] = $v;
+		}
+		$this->controller->ajax_exit('true',$data);
+	}
+
 	public function add_pub(){
 		$gp = $this->controller->get_gp(array('businesstype', 'content','imageurl','userid'));
 		$consult = array('userid'=>$gp['userid'],'zxtype'=>PUB_CON);

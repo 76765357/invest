@@ -2,7 +2,7 @@
 class consultMsgDao extends Dao {
 	
 	public $table_name = 'consult_message';
-	private $fields = "id,zxid,message,userid,lastdate";
+	private $fields = "id,zxid,message,from,to,lastdate";
 	
 	public function add($rank) {
 		$rank = $this->dao->db->build_key($rank, $this->fields);
