@@ -58,15 +58,16 @@ class userController extends Controller {
 		$user = $this->controller->get_gp(array('phone', 'password'));
 		$result = $this->_getUserDao()->getUser($user);
 		if ($result > 0) {
-			$this->controller->ajax_exit('true',array('userid'=>$result['id']));
+			$this->controller->ajax_exit('true',array('userid'=>$result['userid']));
 		} else {
-			$this->controller->ajax_msg('false','登陆失败,原因:没有这个用户');
+			$this->controller->ajax_msg('false','登陆失败');
 		}
 	}
 	
 	public function get() {
 		$user = $this->controller->get_gp(array('userid'));
 		$result = $this->_getUserDao()->getUser($user);
+		print_r($result);
 		if ($result) {
 			$this->controller->ajax_exit('true',$result);
 		} else {

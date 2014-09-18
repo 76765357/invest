@@ -112,7 +112,37 @@ class consultController extends Controller {
 	}
 
 	public function my(){
-
+		$gp = $this->controller->get_gp(array('userid'));
+		$conDao = $this->_getConsultDao();
+		$msgDao = $this->_getMsgDao();
+		$phoDao = $this->_getPhoneDao();
+		$pubDao = $this->_getPubDao();
+		$consults = $conDao->getUserConsult($gp['userid']);
+		$myConsult = array('result');
+		foreach($consults as $k=>$v){
+			if($v['zxtype'] == PUB_CON){
+				$data = $pubDao->getOnePub($v['zxid']);
+				$myConsult['result'][$k]['zxid'] = $v['zxid'];
+				$myConsult['result'][$k]['zxtype'] = PUB_CON;
+				$myConsult['result'][$k]['question'] = $data['content'];
+				//todo
+				$myConsult['result']['lastanswerer'] = '';
+			}
+			if($v['zxtype'] == MSG_CON){
+				$data = $msgDao->getOneMsg($v['zxid']);
+				$myConsult['result'][$k]['zxid'] = $v['zxid'];
+				$myConsult['result'][$k]['zxtype'] = MSG_CON;
+				$myConsult['result'][$k]['question'] = $data['message'];
+			}
+			if($v['zxtype'] == TEL_CON){
+				$data = $phoDao->getOneTel($v['zxid']);
+				$myConsult['result'][$k]['zxid'] = $v['zxid'];
+				$myConsult['result'][$k]['zxtype'] = TEL_CON;
+				$myConsult['result'][$k]['date'] = $data['date'];
+				$myConsult['result'][$k]['phone'] = $data['phone'];
+			}
+		}
+		$this->controller->ajax_exit('true',$myConsult);
 	}
 
 	public function pub_detail(){

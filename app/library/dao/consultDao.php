@@ -12,4 +12,9 @@ class consultDao extends Dao {
 	public function getByField($cond) {
 		return $this->dao->db->get_all($this->table_name,20,0,$cond);
 	}
+	
+	public function getUserConsult($uid){
+		return $this->dao->db->get_all_sql("SELECT max(zxid) as zxid,zxtype,userid FROM `consult` where userid={$uid} group by zxtype");
+	}
+	
 }
