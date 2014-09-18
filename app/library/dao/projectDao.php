@@ -12,4 +12,8 @@ class projectDao extends Dao {
 	public function getAll() {
 		return $this->dao->db->get_all($this->table_name);
 	}
+
+	public function getByCond($cond) {
+		return $this->dao->db->get_all($this->table_name,100,0,$cond);
+	}
 }

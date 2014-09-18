@@ -12,4 +12,8 @@ class consultTypeDao extends Dao {
 	public function getAll() {
 		return $this->dao->db->get_all($this->table_name, 20, 0, array(), 'typeid', 'DESC');
 	}
+
+	public function getOne($typeid) {
+		return $this->dao->db->get_one($typeid, $this->table_name, 'typeid');
+	}
 }
