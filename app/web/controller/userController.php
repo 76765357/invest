@@ -9,7 +9,17 @@ define('ENTER','enterprise');	//企业
 
 class userController extends Controller {
 	
-	public $initphp_list = array('eregister','iregister','login','get','mod_info','mod_intro','','attention'); //Action白名单
+	public $initphp_list = array('eregister',
+		'iregister',
+		'login',
+		'get',
+		'mod_info',
+		'mod_intro',
+		'set_rank',	//给评价
+		'get_rank',	//拿评价
+		'attention',//加或者取消关注
+		'all_atten' //全部关注
+	); //Action白名单
 
 	public function run() {    
 		//$this->view->display("index_run"); //展示模板页面
@@ -107,11 +117,27 @@ class userController extends Controller {
 		}
 	}
 
+	public function set_rank(){
+		//$result = $this->_getRankDao();
+	}
+
+	public function get_rank(){
+
+	}
+
+	public function all_atten(){
+
+	}
+
 	private function _getUserDao() {
 		return InitPHP::getDao("user");
 	}
 
 	private function _getRealeationDao() {
 		return InitPHP::getDao("releation");
+	}
+
+	private function _getRankDao() {
+		return InitPHP::getDao("rank");
 	}
 } 

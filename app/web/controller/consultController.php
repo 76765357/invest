@@ -6,6 +6,7 @@
 define('PUB_CON',0);
 define('MSG_CON',1);
 define('TEL_CON',2);
+
 class consultController extends Controller {
 	
 	public $initphp_list = array(
@@ -14,8 +15,8 @@ class consultController extends Controller {
 								'add_phone',		//电话咨询
 								'add_msg',			//图文咨询
 								'add_pub',			//公开咨询
-								'',
-								''
+								'my',				//我的咨询
+								'pub_detail'		//公开咨询详情
 							); //Action白名单
 
 	public function run() {    
@@ -108,6 +109,14 @@ class consultController extends Controller {
 		} else {
 			$this->controller->ajax_exit('false');
 		}
+	}
+
+	public function my(){
+
+	}
+
+	public function pub_detail(){
+
 	}
 
 	private function _getConsultDao() {
