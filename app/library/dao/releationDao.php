@@ -20,4 +20,8 @@ class releationDao extends Dao {
 	public function get($cond) {
 		return $this->dao->db->get_one_by_field($cond, $this->table_name);
 	}
+
+	public function getCnt($cond) {
+		return $this->dao->db->get_count($this->table_name, $cond);
+	}
 }

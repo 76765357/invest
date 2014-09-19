@@ -9,13 +9,14 @@ define('ENTER','enterprise');	//企业
 
 class userController extends Controller {
 	
-	public $initphp_list = array('eregister',
-		'iregister',
-		'login',
+	public $initphp_list = array(
+		'eregister',	//企业用户注册
+		'iregister',	//中介用户注册
+		'login',		//登陆
 		'get_inter_user',//中介信息
 		'get_enter_user',//企业用户信息
-		'mod_info',
-		'mod_intro',
+		'mod_info',		//修改用户信息
+		'mod_intro',	//修改自己的简介
 		'set_rank',	//给评价
 		'get_rank',	//拿评价
 		'attention',//加或者取消关注
@@ -69,8 +70,10 @@ class userController extends Controller {
 		$user = $this->controller->get_gp(array('userid'));
 		$result = $this->_getUserDao()->getEnterUser($user['userid']);
 		if ($result) {
-			$result['beattentionnum'] = '0';
-			$result['attentionnum'] = '20';
+			$rCond = array('userid'=>$user['userid'],'stat'=>'1');
+			$rbCond = array('otheruserid'=>$user['userid'],'stat'=>'1');
+			$result['beattentionnum'] = $this->_getRealeationDao()->getCnt($rbCond);
+			$result['attentionnum'] = $this->_getRealeationDao()->getCnt($rCond);
 			$proj = $this->_getPrjDao()->getByCond(array('userid'=>$user['userid']));
 			if($proj[0] > 0) foreach($proj[0] as $v){
 				$result['mineapp'][] = array('name'=>$v['name'],'appid'=>$v['id']);
@@ -86,11 +89,11 @@ class userController extends Controller {
 		$result = $this->_getUserDao()->getInterUser($user['userid']);
 		if ($result) {
 			$tags = $this->_getTagDao()->getByUserId($user['userid']);
-			print_r($tags);
+			$rbCond = array('otheruserid'=>$user['userid'],'stat'=>'1');
+			$result['fansnum'] = $this->_getRealeationDao()->getCnt($rbCond);
 			if(count($tags) > 0) foreach($tags as $v){
 				$result['tag'][] = array('typeid'=>$v['consult_id'],'title'=>$v['title']);
 			}
-			print_r($result);
 			$this->controller->ajax_exit('true',$result);
 		} else {
 			$this->controller->ajax_msg('false','失败,原因:没有数据');
