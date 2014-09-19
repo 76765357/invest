@@ -98,7 +98,7 @@ class consultController extends Controller {
 	}
 
 	public function add_pub(){
-		$gp = $this->controller->get_gp(array('businesstype', 'content','imageurl','userid'));
+		$gp = $this->controller->get_gp(array('businesstype', 'content','imagelist','userid'));
 		$consult = array('userid'=>$gp['userid'],'zxtype'=>PUB_CON);
 		$zxid = $this->_getConsultDao()->add($consult);
 		if ($zxid > 0) {
