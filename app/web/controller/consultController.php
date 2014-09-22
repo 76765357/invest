@@ -118,32 +118,31 @@ class consultController extends Controller {
 		$phoDao = $this->_getPhoneDao();
 		$pubDao = $this->_getPubDao();
 		$consults = $conDao->getUserConsult($gp['userid']);
-		$myConsult = array('result');
 		foreach($consults as $k=>$v){
 			if($v['zxtype'] == PUB_CON){
 				$data = $pubDao->getOnePub($v['zxid']);
-				$myConsult['result'][$k]['zxid'] = $v['zxid'];
-				$myConsult['result'][$k]['zxtype'] = PUB_CON;
-				$myConsult['result'][$k]['question'] = $data['content'];
+				$myConsult['listArr'][$k]['zxid'] = $v['zxid'];
+				$myConsult['listArr'][$k]['zxtype'] = PUB_CON;
+				$myConsult['listArr'][$k]['question'] = $data['content'];
 				//todo
-				$myConsult['result']['lastanswerer'] = '';
+				$myConsult['listArr'][$k]['lastanswerer'] = '';
 			}
 			if($v['zxtype'] == MSG_CON){
 				$data = $msgDao->getOneMsg($v['zxid']);
-				$myConsult['result'][$k]['zxid'] = $v['zxid'];
-				$myConsult['result'][$k]['zxtype'] = MSG_CON;
-				$myConsult['result'][$k]['question'] = $data['message'];
+				$myConsult['listArr'][$k]['zxid'] = $v['zxid'];
+				$myConsult['listArr'][$k]['zxtype'] = MSG_CON;
+				$myConsult['listArr'][$k]['question'] = $data['message'];
 			}
 			if($v['zxtype'] == TEL_CON){
 				$data = $phoDao->getOneTel($v['zxid']);
-				$myConsult['result'][$k]['zxid'] = $v['zxid'];
-				$myConsult['result'][$k]['zxtype'] = TEL_CON;
-				$myConsult['result'][$k]['date'] = $data['date'];
-				$myConsult['result'][$k]['phone'] = $data['phone'];
+				$myConsult['listArr'][$k]['zxid'] = $v['zxid'];
+				$myConsult['listArr'][$k]['zxtype'] = TEL_CON;
+				$myConsult['listArr'][$k]['date'] = $data['date'];
+				$myConsult['listArr'][$k]['phone'] = $data['phone'];
 			}
 		}
-		if(empty($myConsult['result'])){
-			$this->controller->ajax_exit('false','没有数据');
+		if(empty($myConsult['listArr'])){
+			$this->controller->ajax_msg('false','没有数据');
 		}else{
 			$this->controller->ajax_exit('true',$myConsult);
 		}
