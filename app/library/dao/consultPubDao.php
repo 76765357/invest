@@ -1,7 +1,7 @@
 <?php 
 class consultPubDao extends Dao {
 	
-	public $table_name = 'consult_Public';
+	public $table_name = 'consult_public';
 	private $fields = "id,zxid,businesstype,content,imageurl,userid";
 	
 	public function add($rank) {

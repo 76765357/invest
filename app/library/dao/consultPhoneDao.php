@@ -1,7 +1,7 @@
 <?php 
 class consultPhoneDao extends Dao {
 	
-	public $table_name = 'consult_Phone';
+	public $table_name = 'consult_phone';
 	private $fields = "id,zxid,userid,date,phone";
 	
 	public function add($data) {
