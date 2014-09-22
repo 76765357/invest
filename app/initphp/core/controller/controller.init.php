@@ -26,13 +26,21 @@ class controllerInit extends filterInit{
 
 	//不转码的ajax_return
 	public function ajax_exit($status, $result = array()){
-		$return_data = array('status' => $status, 'result' => $result);
+		if($result){
+			$return_data = array('status' => $status, 'result' => $result);
+		}else{
+			$return_data = array('status' => $status);
+		}
 		exit(json_encode($return_data,JSON_UNESCAPED_UNICODE));
 	}
 	
 	//不转码的ajax_return
 	public function ajax_msg($status, $msg){
-		$return_data = array('status' => $status, 'msg' => $msg);
+		if($msg){
+			$return_data = array('status' => $status, 'msg' => $msg);
+		}else{
+			$return_data = array('status' => $status);
+		}
 		exit(json_encode($return_data,JSON_UNESCAPED_UNICODE));
 	}
 

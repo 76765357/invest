@@ -122,7 +122,10 @@ class userController extends Controller {
 	//用户信息编辑
 	public function mod_info(){
 		$cond= $this->controller->get_gp(array('userid'));
-		$data = $this->controller->get_gp(array('name', 'company', 'postion', 'city', 'area'));
+		if(!$cond['userid']) {
+			$this->controller->ajax_msg('false','修改失败,原因:没有userid参数');
+		}
+		$data = $this->controller->get_gp(array('name', 'company', 'position', 'city', 'area'));
 		$result = $this->_getUserDao()->update($data,$cond);
 		if ($result > 0) {
 			$this->controller->ajax_exit('true');
