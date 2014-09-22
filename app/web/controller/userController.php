@@ -125,7 +125,7 @@ class userController extends Controller {
 		if(!$cond['userid']) {
 			$this->controller->ajax_msg('false','修改失败,原因:没有userid参数');
 		}
-		$data = $this->controller->get_gp(array('name', 'company', 'position', 'city', 'area'));
+		$data = $this->controller->get_gp(array('name', 'company', 'position', 'city', 'area','introduction'));
 		$result = $this->_getUserDao()->update($data,$cond);
 		if ($result > 0) {
 			$this->controller->ajax_exit('true');
