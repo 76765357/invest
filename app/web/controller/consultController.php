@@ -142,7 +142,11 @@ class consultController extends Controller {
 				$myConsult['result'][$k]['phone'] = $data['phone'];
 			}
 		}
-		$this->controller->ajax_exit('true',$myConsult);
+		if(empty($myConsult['result'])){
+			$this->controller->ajax_exit('false','没有数据');
+		}else{
+			$this->controller->ajax_exit('true',$myConsult);
+		}
 	}
 
 	public function pub_detail(){
