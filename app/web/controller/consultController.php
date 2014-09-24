@@ -2,22 +2,24 @@
 /**
  * consultController
  * @author wanglong 
- */
 define('PUB_CON',0);
 define('MSG_CON',1);
 define('TEL_CON',2);
+ */
 
 class consultController extends Controller {
 	
 	public $initphp_list = array(
-								'get_types',		//公开咨询和私密咨询得公用接口
-								'get_types_desc',	//咨询业务类型介绍
-								'add_phone',		//电话咨询
-								'add_msg',			//图文咨询
-								'add_pub',			//公开咨询
-								'my',				//我的咨询
-								'pub_detail'		//公开咨询详情
-							); //Action白名单
+		'get_types',		//公开咨询和私密咨询得公用接口
+		'get_types_desc',	//咨询业务类型介绍
+		'add_phone',		//电话咨询
+		'add_msg',			//图文咨询
+		'add_pub',			//公开咨询
+		'my',				//我的咨询
+		'pub_detail',		//公开咨询详情
+		//index.php?c=consult&a=add_answer&userid=1&zxid=1&content=1haoshouzhang
+		'add_answer',		//添加公开咨询回答
+	); //Action白名单
 
 	public function run() {    
 		//$this->view->display("index_run"); //展示模板页面
@@ -149,7 +151,42 @@ class consultController extends Controller {
 	}
 
 	public function pub_detail(){
+		$gp = $this->controller->get_gp(array('userid','zxid'));
+		$zxid = $gp['zxid'];
+		$zx = $this->_getConsultDao()->getOneByField($gp);
+		$pub = $this->_getPubDao()->getOnePub($zxid);
+		if($zx && $zx['zxtype'] == PUB_CON){
+			$answerarr = array();
+			$ans = $this->_getAnsDao()->getByField(array('zxid'=>$zxid));
+			if($ans[0])foreach($ans[0] as $k=>$v){
+				$cond = array('userid'=>$v['userid']);
+				$otheruser =  $this->_getUserDao()->getUser($cond);
+				$answerarr[$k]['usertype'] = $otheruser['role']; 
+				$answerarr[$k]['userid'] = $v['userid']; 
+				$answerarr[$k]['name'] = $otheruser['name']; 
+				$answerarr[$k]['company'] = $otheruser['company']; 
+				$answerarr[$k]['city'] = $otheruser['city']; 
+				$answerarr[$k]['area'] = $otheruser['area']; 
+				$answerarr[$k]['avatar'] = $otheruser['avatar']; 
+				if($otheruser['role'] == INTER){
+					$answerarr[$k]['hadservernums'] = $otheruser['hadservernums']; 
+				}
+				$answerarr[$k]['answer'] = $v['content'];
+			}
+			$this->controller->ajax_exit('true',array('zxid'=>$gp['zxid'],'question'=>$pub['content'],'answerarr'=>$answerarr));
+		}else{
+			$this->controller->ajax_msg('false','非公开类咨询');
+		}
+	}
 
+	public function add_answer(){
+		$gp = $this->controller->get_gp(array('userid','zxid','content'));
+		$ans = $this->_getAnsDao()->add($gp);
+		if(!$ans){
+			$this->controller->ajax_msg('false','插入失败');
+		}else{
+			$this->controller->ajax_exit('true');
+		}
 	}
 
 	private function _getConsultDao() {
@@ -170,5 +207,13 @@ class consultController extends Controller {
 
 	private function _getTypeDao() {
 		return InitPHP::getDao("consultType");
+	}
+
+	private function _getAnsDao() {
+		return InitPHP::getDao("answer");
+	}
+
+	private function _getUserDao() {
+		return InitPHP::getDao("user");
 	}
 } 

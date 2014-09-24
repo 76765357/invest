@@ -17,4 +17,7 @@ class consultDao extends Dao {
 		return $this->dao->db->get_all_sql("SELECT max(zxid) as zxid,zxtype,userid FROM `consult` where userid={$uid} group by zxtype");
 	}
 	
+	public function getOneByField($cond) {
+		return $this->dao->db->get_one_by_field($cond, $this->table_name);
+	}
 }
