@@ -18,4 +18,7 @@ class consultDao extends Dao {
 		return $this->dao->db->get_all_sql("SELECT zxid,zxtype,userid FROM `consult` where userid={$uid} ");
 	}
 	
+	public function getOneByField($cond) {
+		return $this->dao->db->get_one_by_field($cond, $this->table_name);
+	}
 }

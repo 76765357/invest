@@ -24,4 +24,8 @@ class releationDao extends Dao {
 	public function getCnt($cond) {
 		return $this->dao->db->get_count($this->table_name, $cond);
 	}
+
+	public function getByField($cond) {
+		return $this->dao->db->get_all($this->table_name,20,0,$cond);
+	}
 }

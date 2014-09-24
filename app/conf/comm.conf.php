@@ -185,3 +185,13 @@ $InitPHP_conf['mongo']['default']['password']   = '';
  */
 $InitPHP_conf['redis']['default']['server']     = '127.0.0.1';
 $InitPHP_conf['redis']['default']['port']       = '6379';
+
+/*
+ * 公共变量
+ */
+
+define('ENTER','1');	//企业
+define('INTER','2');	//中介
+define('PUB_CON',0);
+define('MSG_CON',1);
+define('TEL_CON',2);
