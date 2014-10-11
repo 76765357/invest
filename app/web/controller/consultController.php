@@ -19,6 +19,7 @@ class consultController extends Controller {
 		'pub_detail',		//公开咨询详情
 		//index.php?c=consult&a=add_answer&userid=1&zxid=1&content=1haoshouzhang
 		'add_answer',		//添加公开咨询回答
+		'consult_list',           //咨询列表
 	); //Action白名单
 
 	public function run() {    
@@ -110,6 +111,45 @@ class consultController extends Controller {
 			$this->controller->ajax_exit('true');
 		} else {
 			$this->controller->ajax_exit('false');
+		}
+	}
+
+	public function consult_list(){
+		$r_info = $this->controller->get_gp(array('zxtype','page','pagenum'));
+		if($r_info['page']<=0) $r_info['page']=1;
+		if($r_info['pagenum']<=0) $r_info['pagenum']=20;
+		$page_start= ($r_info['page']-1)*$r_info['pagenum'];
+		$pubDao = $this->_getPubDao();
+		if(!isset($r_info['zxtype'])) $this->controller->ajax_msg('false','没有咨询类型');
+		$cond = array('zxtype'=>$r_info['zxtype']);
+		$consult_list=$this->_getConsultDao()->getByField($cond,$r_info['pagenum'],$page_start,'zxid');
+		if($r_info['zxtype']==PUB_CON)
+		{
+			$consults['pagenum']=$r_info['pagenum'];
+			$consults['page']=$r_info['page'];
+			foreach($consult_list[0] as $k => $v)
+			{
+				$data = $pubDao->getOnePub($v['zxid']);
+				$consults['data'][$k]['zxid']=$v['zxid'];
+				$consults['data'][$k]['zxtype']=$v['zxtype'];
+				$consults['data'][$k]['qustion']=$v['content'];
+				$cond = array('userid'=>$v['userid']);
+				$otheruser =  $this->_getUserDao()->getUser($cond);
+				$consults['data'][$k]['name'] = $otheruser['name'];
+				$consults['data'][$k]['company'] = $otheruser['company'];
+				$consults['data'][$k]['position'] = $otheruser['position'];
+				$consults['data'][$k]['imageurl'] = $otheruser['avatar'];
+				$count_cond = array('zxid'=>$v['zxid']);
+				$counts=$this->_getAnsDao()->getCnt($count_cond);
+				#print_r($counts);
+				$consults['data'][$k]['hadanswernum'] =$counts;
+			}
+			#print_r($consults);
+		}
+		if(empty($consults['data'])){
+			$this->controller->ajax_msg('false','没有数据');
+		}else{
+			$this->controller->ajax_exit('true',$consults);
 		}
 	}
 

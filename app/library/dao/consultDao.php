@@ -9,8 +9,8 @@ class consultDao extends Dao {
 		return $this->dao->db->insert($data, $this->table_name);
 	}
 
-	public function getByField($cond) {
-		return $this->dao->db->get_all($this->table_name,20,0,$cond);
+	public function getByField($cond,$limit=20,$start=0,$id_key='id') {
+		return $this->dao->db->get_all($this->table_name,$limit,$start,$cond,$id_key);
 	}
 	
 	public function getUserConsult($uid){
@@ -20,5 +20,8 @@ class consultDao extends Dao {
 	
 	public function getOneByField($cond) {
 		return $this->dao->db->get_one_by_field($cond, $this->table_name);
+	}
+	public function getCount($cond){
+		return $this->dao->db->get_count( $this->table_name,$cond);
 	}
 }

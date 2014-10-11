@@ -21,6 +21,7 @@ class userController extends Controller {
 		'get_rank',	//拿评价
 		'attention',//加或者取消关注
 		'all_atten', //全部关注
+		'accept_atten',//分页显示关注我的人
 		'get_inter_user_list', //根据咨询类型获得中介列表
 	); //Action白名单
 
@@ -148,7 +149,20 @@ class userController extends Controller {
 	}
 
 	public function set_rank(){
-		//$result = $this->_getRankDao();
+		$cond = $this->controller->get_gp(array('userid','agencyid'));
+		$data = $this->controller->get_gp(array('userid','agencyid','starrank','ishelpful','iswell','content'));
+		$result = $this->_getRankDao()->get($cond);
+		if($result) {
+			$result_e = $this->_getRankDao()->update($data,$cond);
+		} else {
+			$result_e = $this->_getRankDao()->add($data);
+		}
+		if($result_e)
+		{
+			$this->controller->ajax_exit('true');
+		}else{
+			$this->controller->ajax_exit('false');
+		}
 	}
 
 	public function get_rank(){
@@ -180,6 +194,35 @@ class userController extends Controller {
 		$this->controller->ajax_exit('true',array('members'=>$members));
 	}
 
+        public function accept_atten(){
+                $r_info = $this->controller->get_gp(array('userid','page','pagenum'));
+                $cond	= array('otheruserid'=>$r_info['userid'],'stat'=>1);
+		if($r_info['page']<=0) $r_info['page']=1;
+		$page_start= ($r_info['page']-1)*$r_info['pagenum'];
+		if ($page_start <0) $page_start=0;
+		if($r_info['pagenum']<=0) $r_info['pagenum']=20;
+                $data = $this->_getRealeationDao()->getByField($cond,$r_info['pagenum'],$page_start);
+                $members = array();
+                if(!empty($data[0]))foreach($data[0] as $k=>$v){
+                        $cond = array('userid'=>$v['userid']);
+                        $otheruser =  $this->_getUserDao()->getUser($cond);
+                        $members[$k]['userid'] = $otheruser['userid'];
+                        $members[$k]['name'] = $otheruser['name'];
+                        $members[$k]['company'] = $otheruser['company'];
+                        $members[$k]['city'] = $otheruser['city'];
+                        $members[$k]['area'] = $otheruser['area'];
+                        $members[$k]['imageurl'] = $otheruser['avatar'];
+                        $members[$k]['hadservernums'] = $otheruser['hadservernums'];
+                        $userTag = $this->_getTagDao()->getByUserId($v['otheruserid']);
+                        if($userTag) foreach($userTag as $ut){
+                                $members[$k]['tag'][] = array(
+                                        "typeid" => $ut['consult_id'],
+                                        "title" => $ut['title'],
+                                );
+                        }
+                }
+                $this->controller->ajax_exit('true',array('pagenum'=>$r_info['pagenum'],'page'=>$r_info['page'],'data'=>$members));
+        }
 	public function get_inter_user_list(){
 		$cond = $this->controller->get_gp(array('typeid'));
 		$cond = array('consult_id'=>$cond['typeid']);

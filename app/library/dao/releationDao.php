@@ -25,7 +25,7 @@ class releationDao extends Dao {
 		return $this->dao->db->get_count($this->table_name, $cond);
 	}
 
-	public function getByField($cond) {
-		return $this->dao->db->get_all($this->table_name,20,0,$cond);
+	public function getByField($cond,$limit=20,$start=0,$id_key='id') {
+		return $this->dao->db->get_all($this->table_name,$limit,$start,$cond,$id_key);
 	}
 }
