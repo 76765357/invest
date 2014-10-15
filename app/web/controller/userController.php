@@ -194,7 +194,7 @@ class userController extends Controller {
 		$this->controller->ajax_exit('true',array('members'=>$members));
 	}
 
-        public function accept_atten(){
+    public function accept_atten(){
                 $r_info = $this->controller->get_gp(array('userid','page','pagenum'));
                 $cond	= array('otheruserid'=>$r_info['userid'],'stat'=>1);
 		if($r_info['page']<=0) $r_info['page']=1;
