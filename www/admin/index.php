@@ -1,4 +1,7 @@
 <?php
+if(empty($_GET["c"])){
+	header("Location:index.php?c=admin&a=iuser_list");
+}
 define("APP_PATH", "../../app/"); 
 header("Content-Type:text/html; charset=utf-8");   
 require_once(APP_PATH . 'initphp/initphp.php'); //导入配置文件-必须载入
