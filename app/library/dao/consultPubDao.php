@@ -9,8 +9,8 @@ class consultPubDao extends Dao {
 		return $this->dao->db->insert($rank, $this->table_name);
 	}
 
-	public function getByField($cond) {
-		return $this->dao->db->get_all($this->table_name,20,0,$cond);
+	public function getByField($cond,$limit=20,$start=0) {
+		return $this->dao->db->get_all($this->table_name,$limit,$start,$cond);
 	}
 
 	public function getOnePub($zxid){

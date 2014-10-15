@@ -13,6 +13,7 @@ class userController extends Controller {
 		'eregister',	//企业用户注册
 		'iregister',	//中介用户注册
 		'login',		//登陆
+		'get_user',	//获取用户信息统一接口
 		'get_inter_user',//中介信息
 		'get_enter_user',//企业用户信息
 		'mod_info',		//修改用户信息
@@ -23,6 +24,7 @@ class userController extends Controller {
 		'all_atten', //全部关注
 		'accept_atten',//分页显示关注我的人
 		'get_inter_user_list', //根据咨询类型获得中介列表
+		'get_tag',	//用户tag
 	); //Action白名单
 
 	public function run() {    
@@ -61,11 +63,54 @@ class userController extends Controller {
 	public function login() {
 		$user = $this->controller->get_gp(array('phone', 'password'));
 		$result = $this->_getUserDao()->getUser($user);
+		#print_r($result);
 		if ($result > 0) {
 			$this->controller->ajax_exit('true',array('userid'=>$result['userid']));
 		} else {
 			$this->controller->ajax_msg('false','登陆失败');
 		}
+	}
+
+        public function get_user() {
+                $user = $this->controller->get_gp(array('userid'));
+		$userinfo = $this->_getUserDao()->getUser($user);
+		if($userinfo['role']==1)
+		{
+                    $result = $this->_getUserDao()->getEnterUser($user['userid']);
+                    if ($result) {
+                        $rCond = array('userid'=>$user['userid'],'stat'=>'1');
+                        $rbCond = array('otheruserid'=>$user['userid'],'stat'=>'1');
+                        $result['beattentionnum'] = $this->_getRealeationDao()->getCnt($rbCond);
+                        $result['attentionnum'] = $this->_getRealeationDao()->getCnt($rCond);
+                        $proj = $this->_getPrjDao()->getByCond(array('userid'=>$user['userid']));
+                        if($proj[0] > 0) foreach($proj[0] as $v){
+                                $result['mineapp'][] = array('name'=>$v['name'],'appid'=>$v['id']);
+                        }
+                        $this->controller->ajax_exit('true',$result);
+                    } else {
+                        $this->controller->ajax_msg('false','失败,原因:没有数据');
+                    }
+		}else{
+                    $result = $this->_getUserDao()->getInterUser($user['userid']);
+                    if ($result) {
+                        $tags = $this->_getTagDao()->getByUserId($user['userid']);
+                        $rbCond = array('otheruserid'=>$user['userid'],'stat'=>'1');
+                        $result['fansnum'] = $this->_getRealeationDao()->getCnt($rbCond);
+                        if(count($tags) > 0) foreach($tags as $v){
+                                $result['tag'][] = array('typeid'=>$v['consult_id'],'title'=>$v['title']);
+                        }
+                        $this->controller->ajax_exit('true',$result);
+                    } else {
+                        $this->controller->ajax_msg('false','失败,原因:没有数据');
+                    }
+		}
+        }
+	
+	public function get_tag() {
+		$user = $this->controller->get_gp(array('userid'));
+		$tags = $this->_getTagDao()->getByUserId($user['userid']);
+		print_r($tags);
+	
 	}
 	
 	public function get_enter_user() {
@@ -231,7 +276,8 @@ class userController extends Controller {
 		if(!empty($data[0]))foreach($data[0] as $k=>$v){
 			$cond = array('userid'=>$v['userid']);
 			$otheruser =  $this->_getUserDao()->getUser($cond);
-			$members[$k]['userid'] = $otheruser['userid']; 
+			$members[$k]['userid'] = $otheruser['userid'];
+			$members[$k]['role'] = $otheruser['role']; 
 			$members[$k]['name'] = $otheruser['name']; 
 			$members[$k]['company'] = $otheruser['company']; 
 			$members[$k]['city'] = $otheruser['city']; 

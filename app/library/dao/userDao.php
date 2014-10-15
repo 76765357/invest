@@ -4,9 +4,9 @@ class userDao extends Dao {
 	public $table_name = 'user';
 	private $fields = "userid,role,name,avatar,password,address,hadservernums,company,phone,position,city,area,fansnum,introduction,serverrank,serverprecent,professionrank,professionprecent";
 	//企业用户信息字段
-	private $efields = "userid,name,avatar,company,position,city,area,introduction";
+	private $efields = "userid,name,role,avatar,company,position,city,area,introduction";
 	//中介用户信息字段
-	private $ifields = "userid,name,avatar,address,hadservernums,company,phone,position,city,fansnum,introduction,serverrank,serverprecent,professionrank,professionprecent";
+	private $ifields = "userid,name,role,avatar,address,hadservernums,company,phone,position,city,fansnum,introduction,serverrank,serverprecent,professionrank,professionprecent";
 	
 	public function addUser($user) {
 		$user = $this->dao->db->build_key($user, $this->fields);

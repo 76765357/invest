@@ -6,7 +6,6 @@ define('PUB_CON',0);
 define('MSG_CON',1);
 define('TEL_CON',2);
  */
-
 class consultController extends Controller {
 	
 	public $initphp_list = array(
@@ -20,6 +19,8 @@ class consultController extends Controller {
 		//index.php?c=consult&a=add_answer&userid=1&zxid=1&content=1haoshouzhang
 		'add_answer',		//添加公开咨询回答
 		'consult_list',           //咨询列表
+		'consult_public',	//公开咨询列表
+		'consult_new',		//最新收到的咨询
 	); //Action白名单
 
 	public function run() {    
@@ -56,8 +57,15 @@ class consultController extends Controller {
 	}
 
 	public function add_phone(){
-		$gp = $this->controller->get_gp(array('userid', 'date','phone'));
-		$consult = array('userid'=>$gp['userid'],'zxtype'=>TEL_CON);
+		$gp = $this->controller->get_gp(array('userid','to', 'date','phone'));
+		$role=$this->controller->get_gp(array('role'));
+                if($role['role']=='qy')
+                {
+                        $role['role']=1;
+                }elseif($role['role']=='zj'){
+                        $role['role']=2;
+                }
+		$consult = array('userid'=>$gp['userid'],'from'=>$gp['userid'],'to'=>$gp['to'],'role'=>$role['role'],'zxtype'=>TEL_CON,'p_time'=>time());
 		$zxid = $this->_getConsultDao()->add($consult);
 		if ($zxid > 0) {
 			$gp['zxid'] = $zxid;
@@ -72,8 +80,16 @@ class consultController extends Controller {
 	public function add_msg(){
 		$msg = $this->controller->get_gp(array('message'));
 		$fromto = $this->controller->get_gp(array('from','to','lastdate'));
+                $gp=$this->controller->get_gp(array('role'));
+		if($gp['role']=='qy')
+                {
+                        $gp['role']=1;
+                }elseif($gp['role']=='zj'){
+                        $gp['role']=2;
+                }
 		if($msg['message'] !=''){
-			$consult = array('userid'=>$fromto['from'],'zxtype'=>MSG_CON);
+			$consult = array('userid'=>$fromto['from'],'from'=>$fromto['from'],'to'=>$fromto['to'],'role'=>$gp['role'],'zxtype'=>MSG_CON,'p_time'=>time());
+			print_r($consult);
 			$zxid = $this->_getConsultDao()->add($consult);
 			if ($zxid > 0) {
 				$gp = $msg + $fromto;
@@ -101,8 +117,14 @@ class consultController extends Controller {
 	}
 
 	public function add_pub(){
-		$gp = $this->controller->get_gp(array('businesstype', 'content','imagelist','userid'));
-		$consult = array('userid'=>$gp['userid'],'zxtype'=>PUB_CON);
+		$gp = $this->controller->get_gp(array('businesstype', 'content','imagelist','userid','role'));
+		if($gp['role']=='qy')
+		{
+			$gp['role']=1;
+		}elseif($gp['role']=='zj'){
+			$gp['role']=2;
+		}
+		$consult = array('userid'=>$gp['userid'],'role'=>$gp['role'],'from'=>$gp['userid'],'zxtype'=>PUB_CON,'p_time'=>time());
 		$zxid = $this->_getConsultDao()->add($consult);
 		if ($zxid > 0) {
 			$gp['zxid'] = $zxid;
@@ -113,6 +135,84 @@ class consultController extends Controller {
 			$this->controller->ajax_exit('false');
 		}
 	}
+
+	public function consult_public(){
+                $r_info = $this->controller->get_gp(array('type','page','pagenum'));
+                if($r_info['page']<=0) $r_info['page']=1;
+                if($r_info['pagenum']<=0) $r_info['pagenum']=20;
+                $page_start= ($r_info['page']-1)*$r_info['pagenum'];
+		if($r_info['type'] ) $cond = array('businesstype'=>$r_info['type']);
+		$consult_list=$this->_getPubDao()->getByField($cond,$r_info['pagenum'],$page_start);
+		#print_r($consult_list);
+		foreach($consult_list[0] as $k => $v)
+		{
+			$consults['data'][$k]['zxid']=$v['zxid'];
+			$consults['data'][$k]['zxtype']=PUB_CON;
+			$consults['data'][$k]['qustion']=$v['content'];
+			$cond = array('userid'=>$v['userid']);
+
+                        $otheruser =  $this->_getUserDao()->getUser($cond);
+                        $consults['data'][$k]['name'] = $otheruser['name'];
+                        $consults['data'][$k]['company'] = $otheruser['company'];
+                        $consults['data'][$k]['position'] = $otheruser['position'];
+                        $consults['data'][$k]['imageurl'] = $otheruser['avatar'];
+                        $count_cond = array('zxid'=>$v['zxid']);
+                        $counts=$this->_getAnsDao()->getCnt($count_cond);
+                        #print_r($counts);
+                        $consults['data'][$k]['hadanswernum'] =$counts;
+
+		}
+                if(empty($consults['data'])){
+                        $this->controller->ajax_msg('false','没有数据');
+                }else{
+                        $this->controller->ajax_exit('true',$consults);
+                }
+	
+	}
+
+	public function consult_new(){
+		$r_info = $this->controller->get_gp(array('userid','page','pagenum'));
+		if($r_info['page']<=0) $r_info['page']=1;
+		if($r_info['pagenum']<=0) $r_info['pagenum']=20;
+		$page_start= ($r_info['page']-1)*$r_info['pagenum'];
+		$consult_new=$this->_getConsultDao()->getConsultNew($r_info['userid'],$r_info['pagenum'],$page_start);
+		#print_r($consult_new);
+		$Consult_n['pagenum']=$r_info['pagenum'];
+                $Consult_n['page']=$r_info['page'];
+                $msgDao = $this->_getMsgDao();
+                $phoDao = $this->_getPhoneDao();
+		foreach($consult_new as $k => $v)
+		{
+			if($v['zxtype'] == MSG_CON){
+                                $data = $msgDao->getOneMsg($v['zxid']);
+                                $Consult_n['data'][$k]['zxid'] = $v['zxid'];
+                                $Consult_n['data'][$k]['zxtype'] = MSG_CON;
+                                $Consult_n['data'][$k]['question'] = $data['message'];
+                        }
+                        if($v['zxtype'] == TEL_CON){
+                                $data = $phoDao->getOneTel($v['zxid']);
+                                $Consult_n['data'][$k]['zxid'] = $v['zxid'];
+                                $Consult_n['data'][$k]['zxtype'] = TEL_CON;
+                                $Consult_n['data'][$k]['servertime'] = $data['date'];
+                                $Consult_n['data'][$k]['phone'] = $data['phone'];
+                        }
+			$p_time=date('Y-m-d',$v['p_time']);
+			$Consult_n['data'][$k]['publishtime'] = $p_time;
+			$cond = array('userid'=>$v['userid']);
+			$otheruser =  $this->_getUserDao()->getUser($cond);
+                        $Consult_n['data'][$k]['name'] = $otheruser['name'];
+                        $Consult_n['data'][$k]['company'] = $otheruser['company'];
+                        $Consult_n['data'][$k]['position'] = $otheruser['position'];
+			$Consult_n['data'][$k]['imageurl'] = $otheruser['avatar'];
+		}
+                if(empty($Consult_n['data'])){
+                        $this->controller->ajax_msg('false','没有数据');
+                }else{
+                        $this->controller->ajax_exit('true',$Consult_n);
+                }
+		
+	}
+
 
 	public function consult_list(){
 		$r_info = $this->controller->get_gp(array('zxtype','page','pagenum'));
@@ -132,19 +232,20 @@ class consultController extends Controller {
 				$data = $pubDao->getOnePub($v['zxid']);
 				$consults['data'][$k]['zxid']=$v['zxid'];
 				$consults['data'][$k]['zxtype']=$v['zxtype'];
-				$consults['data'][$k]['qustion']=$v['content'];
+				$consults['data'][$k]['qustion']=($v['content']!='')?$v['content']:'';
 				$cond = array('userid'=>$v['userid']);
 				$otheruser =  $this->_getUserDao()->getUser($cond);
-				$consults['data'][$k]['name'] = $otheruser['name'];
-				$consults['data'][$k]['company'] = $otheruser['company'];
-				$consults['data'][$k]['position'] = $otheruser['position'];
-				$consults['data'][$k]['imageurl'] = $otheruser['avatar'];
+				if($otheruser){
+					$consults['data'][$k]['name'] = $otheruser['name'];
+					$consults['data'][$k]['company'] = $otheruser['company'];
+					$consults['data'][$k]['position'] = $otheruser['position'];
+					$consults['data'][$k]['imageurl'] = $otheruser['avatar'];
+				}
 				$count_cond = array('zxid'=>$v['zxid']);
 				$counts=$this->_getAnsDao()->getCnt($count_cond);
 				#print_r($counts);
 				$consults['data'][$k]['hadanswernum'] =$counts;
 			}
-			#print_r($consults);
 		}
 		if(empty($consults['data'])){
 			$this->controller->ajax_msg('false','没有数据');
@@ -257,3 +358,4 @@ class consultController extends Controller {
 		return InitPHP::getDao("user");
 	}
 } 
+

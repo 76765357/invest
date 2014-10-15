@@ -2,7 +2,7 @@
 class consultPhoneDao extends Dao {
 	
 	public $table_name = 'consult_phone';
-	private $fields = "id,zxid,userid,date,phone";
+	private $fields = "id,zxid,userid,to,date,phone";
 	
 	public function add($data) {
 		$rank = $this->dao->db->build_key($data, $this->fields);
