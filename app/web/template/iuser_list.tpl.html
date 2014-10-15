@@ -1,0 +1,35 @@
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+			<th width="10%">用户ID</th>
+			<th width="20%">用户名</th>
+			<th width="10%">姓名</th>
+			<th width="10%">公司</th>	
+			<th width="10%">职称</th>
+			<th width="10%">所在城市</th>
+			<th width="10%">简介</th>
+			<th width="35%">操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php 
+		foreach ($users as $key => $value) {
+		?>
+		<tr>
+			<td><?=$value['userid']?></td>
+			<td><?=$value['phone']?></td>
+			<td><?=$value['name']?></td>
+			<td><?=$value['company']?></td>
+			<td><?=$value['position']?></td>
+			<td><?=$value['city']?></td>
+			<td><?=$value['introduction']?></td>
+			<td>
+				<button type="button" data="" class="btn btn-mini btn-success seeInfo">查看评论</button>
+				&nbsp;
+				<button type="button" data="" class="btn btn-mini btn-info seeInfo">查看认证信息</button>
+			</td>
+		</tr>
+		<?php }?>
+	</tbody>
+</table>
+<?php echo $page_html; ?>

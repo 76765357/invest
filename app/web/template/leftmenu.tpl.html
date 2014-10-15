@@ -1,0 +1,55 @@
+			<!-- left menu starts -->
+			<div class="span2 main-menu-span">
+				<div class="well nav-collapse sidebar-nav">
+					<ul class="nav nav-tabs nav-stacked main-menu">
+<?php
+$nav = array(
+		'用户管理' => array(
+			array(
+			'icon'	=>	'icon-user',
+			'link'	=>	'index.php?c=admin&a=iuser_list',
+			'text'	=>	'中介用户列表'
+			),
+			array(
+			'icon'	=>	'icon-user',
+			'link'	=>	'index.php?c=admin&a=euser_list',
+			'text'	=>	'企业用户管理'
+			),
+		),
+		'举报管理' => array(
+			array(
+			'icon'	=>	'icon-thumbs-down',
+			'link'	=>	'index.php?c=admin&a=report_list',
+			'text'	=>	'举报列表'
+			),
+		),
+		'业务类型管理' => array(
+			array(
+			'icon'	=>	'icon-plus',
+			'link'	=>	'index.php?c=admin&a=add_yewu',
+			'text'	=>	'增加业务类型'
+			),
+			array(
+			'icon'	=>	'icon-list-alt',
+			'link'	=>	'index.php?c=admin&a=yewu_list',
+			'text'	=>	'业务类型列表'
+			),
+		),
+	);
+foreach ($nav as $key=>$value){
+?>
+
+						<li class="nav-header hidden-tablet"><?=$key?></li>
+<?php
+foreach ($value as $v){
+?>
+						<li><a class="ajax-link" href="<?=$v['link'] ?>"><i class="<?=$v['icon'] ?>"></i><span class="hidden-tablet"><?=$v['text'] ?></span></a></li>
+<?php
+}}
+?>
+
+					</ul>
+					<label id="for-is-ajax" class="hidden-tablet hide" for="is-ajax"><input id="is-ajax" type="checkbox" class="hide"> Ajax on menu</label>
+				</div><!--/.well -->
+			</div><!--/span-->
+			<!-- left menu ends -->

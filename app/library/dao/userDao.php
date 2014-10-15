@@ -34,4 +34,12 @@ class userDao extends Dao {
 		$sql = "SELECT ".$this->efields." FROM ".$this->table_name.$this->dao->db->build_where($cond);
 		return $this->dao->db->get_one_sql($sql);
 	}
+
+	public function getAll($num,$offset,$field){
+		return $this->dao->db->get_all($this->table_name,$num,$offset,$field,'userid');
+	}
+
+	public function getUserConut($cond){
+		return $this->dao->db->get_count($this->table_name,$cond);
+	}
 }

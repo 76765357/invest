@@ -128,12 +128,12 @@ $InitPHP_conf['controller']['default_after_action']  = 'after'; //默认后置AC
  */
 $InitPHP_conf['template']['template_path']      = 'web/template'; //模板路径
 $InitPHP_conf['template']['template_c_path']    = 'data/template_c'; //模板编译路径 
-$InitPHP_conf['template']['template_type']      = 'htm'; //模板文件类型  
+$InitPHP_conf['template']['template_type']      = 'tpl.html'; //模板文件类型  
 $InitPHP_conf['template']['template_c_type']    = 'tpl.php';//模板编译文件类型 
-$InitPHP_conf['template']['template_tag_left']  = '<!--{';//模板左标签
-$InitPHP_conf['template']['template_tag_right'] = '}-->';//模板右标签
+//$InitPHP_conf['template']['template_tag_left']  = '<!--{';//模板左标签
+//$InitPHP_conf['template']['template_tag_right'] = '}-->';//模板右标签
 $InitPHP_conf['template']['is_compile']         = true;//模板每次编译-系统上线后可以关闭此功能
-$InitPHP_conf['template']['driver']             = 'simple'; //不同的模板驱动编译
+$InitPHP_conf['template']['driver']             = 'default'; //不同的模板驱动编译
 $InitPHP_conf['template']['theme']              = ''; //模板主题
 
 /*********************************Hook配置*****************************************/
@@ -195,3 +195,5 @@ define('INTER','2');	//中介
 define('PUB_CON',0);
 define('MSG_CON',1);
 define('TEL_CON',2);
+define("TEMPLATE_PATH", APP_PATH . $InitPHP_conf['template']['template_path'].'/'); 
+

@@ -1,0 +1,40 @@
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+			<th width="10%">业务ID</th>
+			<th width="20%">业务名称</th>
+			<th width="10%">业务介绍</th>
+			<th width="10%">操作</th>	
+		</tr>
+	</thead>
+	<tbody>
+		<?php 
+		foreach ($yewu as $key => $value) {
+		?>
+		<tr>
+			<td><?=$value['typeid']?></td>
+			<td><?=$value['title']?></td>
+			<td><?=$value['content']?></td>
+			<td>
+				<button type="button" data="" onclick="location.href='index.php?c=admin&a=add_yewu&id=<?=$value['typeid']?>'" class="btn btn-mini btn-success seeInfo">编辑</button>
+				&nbsp;
+				<button type="button" data="<?=$value['typeid']?>" class="btn btn-mini btn-info deltype">删除</button>
+			</td>
+		</tr>
+		<?php }?>
+	</tbody>
+</table>
+<script>
+$(function() {
+	$(".deltype").click(function(){
+		var typeid = $(this).attr('data');
+		alert(typeid);
+		return;
+		$.getJSON('/index.php?c=admin&a=do_del_yewu&typeid=',function(data){
+			showModel(data.result);
+		});
+		
+	});
+});
+</script>
+
