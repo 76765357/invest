@@ -2,7 +2,7 @@
 class consultTypeDao extends Dao {
 	
 	public $table_name = 'consult_type';
-	private $fields = "title,content";
+	private $fields = "title,content,desp";
 	
 	public function add($consult) {
 		$consult = $this->dao->db->build_key($consult, $this->fields);

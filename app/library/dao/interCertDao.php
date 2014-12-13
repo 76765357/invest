@@ -9,8 +9,8 @@ class interCertDao extends Dao {
 		return $this->dao->db->insert($fields, $this->table_name);
 	}
 
-	public function getByField($cond) {
-		return $this->dao->db->get_all($this->table_name,20,0,$cond);
+	public function getOneByField($cond) {
+		return $this->dao->db->get_one_by_field($cond,$this->table_name);
 	}
 
 	public function update($data,$cond) {

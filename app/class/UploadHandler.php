@@ -165,12 +165,12 @@ class UploadHandler
                 $this->head();
                 break;
             case 'GET':
-                $this->get();
+                $this->get($print_response = false);
                 break;
             case 'PATCH':
             case 'PUT':
             case 'POST':
-                $this->post();
+                $this->post($print_response = false);
                 break;
             case 'DELETE':
                 $this->delete();

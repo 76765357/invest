@@ -24,12 +24,92 @@
 			<td><?=$value['city']?></td>
 			<td><?=$value['introduction']?></td>
 			<td>
-				<button type="button" data="" class="btn btn-mini btn-success seeInfo">查看评论</button>
+				<button type="button" data="<?=$value['userid']?><" class="btn btn-mini btn-success rank">查看评论</button>
 				&nbsp;
-				<button type="button" data="" class="btn btn-mini btn-info seeInfo">查看认证信息</button>
+				<button type="button" data="<?=$value['userid']?><" class="btn btn-mini btn-info cert">查看认证信息</button>
 			</td>
 		</tr>
 		<?php }?>
 	</tbody>
 </table>
 <?php echo $page_html; ?>
+<div class="modal hide fade" id="certModal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3>查看认证信息</h3>
+	</div>
+	<div class="modal-body">
+		<table class="table table-bordered">
+			  <thead>
+				  <tr>
+					  <th>专业领域</th>
+					  <th>执业证书编号</th>
+					  <th>个人信息</th>
+					  <th>工作业绩</th>                                          
+				  </tr>
+			  </thead>   
+			  <tbody id="certdata">
+			  </tbody>
+		 </table>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">关闭</a>
+	</div>
+</div>
+<div class="modal hide fade" id="rankModal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h3>查看评论列表</h3>
+	</div>
+	<div class="modal-body">
+		<table class="table table-bordered">
+			  <thead>
+				  <tr>
+					  <th>评论人</th>
+					  <th>评分</th>
+					  <th>服务态度</th>
+					  <th>专业水平</th>
+					  <th>评论内容</th>
+				  </tr>
+			  </thead>   
+			  <tbody id="rankdata">
+			  </tbody>
+		 </table>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">关闭</a>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$('.cert').click(function(e){
+		var uid = $(this).attr('data');
+		e.preventDefault();
+		$.getJSON("index.php?c=user&a=get_inter_user_cert&userid="+uid,function(data){
+			if(data.result){
+				var r = data.result;
+				var h = '<tr>'+
+				'	<td class="center">'+r.profession+'</td>'+
+				'	<td class="center">'+r.professioncode+'</td>'+
+				'	<td class="center">'+r.imformation+'</td>'+
+				'	<td class="center">'+r.achieve+'</td>'+
+				'</tr>';
+				$("#certdata").html(h);
+			}else{
+				var h = '<tr>'+
+				'	<td class="center" colspan=4>没有认证信息</td>'+
+				'</tr>';
+
+				$("#certdata").html(h);
+			}
+		});	
+		$('#certModal').modal('show');
+	});
+	$('.rank').click(function(e){
+		var uid = $(this).attr('data');
+		e.preventDefault();
+		$('#rankModal').modal('show');
+	});
+
+});
+</script>

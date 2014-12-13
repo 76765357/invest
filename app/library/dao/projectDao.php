@@ -2,7 +2,7 @@
 class projectDao extends Dao {
 	
 	public $table_name = 'project';
-	private $fields = "id,userid,name,introduction,bestside,member,isoutside";
+	private $fields = "id,userid,name,introduction,bestside,city,member,isoutside";
 	
 	public function add($project) {
 		$project= $this->dao->db->build_key($project, $this->fields);

@@ -27,6 +27,7 @@ class adminController extends Controller {
 	public function showpage(){
 		$gp = $this->controller->get_gp(array('a'));
 		$this->view->assign('action', $gp['a']);
+		#$this->view->assign('action', TEMPLATE_PATH .$gp['a']);
 		$this->view->display("admin_index"); //展示模板页面
 	}
 
@@ -54,6 +55,12 @@ class adminController extends Controller {
 		$pager= $this->getLibrary('pager'); //分页加载
 		$total = $this->_getUserDao()->getUserConut($cond);
 		$users = $this->_getUserDao()->getAll($this->page_length,($page-1) * $this->page_length,$cond);
+		foreach($users[0] as $k=>$v){
+			$cond = array('userid'=>$v['userid']);
+			$prj = $this->_getPrjDao()->getByCond($cond);
+			if($prj[1] > 0)
+				$users[0][$k]['prj'] = $prj[0];	
+		}
 		$page_html = $pager->pager($total, $this->page_length, 'index.php?c=admin&a=euser_list', true); //最后一个参数为true则使用默认样式
 		$this->view->assign('page_html', $page_html);
 		$this->view->assign('users', $users[0]);
@@ -75,7 +82,7 @@ class adminController extends Controller {
 
 	public function do_add_yewu() {
 		$typeid = $this->controller->get_gp(array('typeid'));
-		$gp = $this->controller->get_gp(array('title','content'));
+		$gp = $this->controller->get_gp(array('title','content','desp'));
 		if($typeid['typeid'] > 0){
 			$result = $this->_getConTypeDao()->update($gp,$typeid);
 		}else{
@@ -91,6 +98,7 @@ class adminController extends Controller {
 	public function do_del_yewu(){
 		$typeid = $this->controller->get_gp(array('typeid'));
 		$result = $this->_getConTypeDao()->del($typeid);
+		$this->controller->ajax_exit('true','删除成功,请刷新后查看结果');
 		if ($result > 0) {
 			$this->controller->ajax_exit('true','删除成功');
 		} else {

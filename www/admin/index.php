@@ -1,4 +1,8 @@
 <?php
+session_start();
+if($_SESSION['login'] != 'yes'){
+	header("Location:login.php");
+}
 if(empty($_GET["c"])){
 	header("Location:index.php?c=admin&a=iuser_list");
 }

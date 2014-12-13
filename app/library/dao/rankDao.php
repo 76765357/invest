@@ -18,4 +18,8 @@ class rankDao extends Dao {
         public function update($data,$cond) {
                 return $this->dao->db->update_by_field($data, $cond, $this->table_name);
         }
+        public function getBySql($sql){
+                return $this->dao->db->get_one_sql($sql);
+        }
+
 }

@@ -16,4 +16,11 @@ class consultMsgDao extends Dao {
 	public function getOneMsg($zxid){
 		return $this->dao->db->get_one($zxid,$this->table_name,'zxid');
 	}
+
+        public function getMsgByZxid($zxid,$lasttime){
+		$sql="SELECT * FROM `consult_message` where zxid={$zxid}";
+		if($lasttime) $sql.=" and lastdate >{$lasttime}";
+                return $this->dao->db->get_all_sql($sql);
+        }
+
 }

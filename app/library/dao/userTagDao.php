@@ -25,5 +25,8 @@ class userTagDao extends Dao {
 		return $this->dao->db->get_all_sql("SELECT user_tag.consult_id, consult_type.title FROM user_tag left join consult_type on user_tag.consult_id = consult_type.typeid WHERE user_tag.`userid`=".$userid);
 	}
 
+        public function del($cond) {
+                return $this->dao->db->delete_by_field($cond,$this->table_name);
+        }
 
 }

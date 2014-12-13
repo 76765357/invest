@@ -24,10 +24,17 @@
 			<td><?=$value['city']?></td>
 			<td><?=$value['introduction']?></td>
 			<td>
-				project
+				<ul>
+				<?php
+					foreach($value['prj'] as $k=>$v){
+						echo "<li>{$v['name']}</li>";
+					}
+				?>
+				</ul>	
 			</td>
 		</tr>
 		<?php }?>
 	</tbody>
 </table>
 <?php echo $page_html; ?>
+

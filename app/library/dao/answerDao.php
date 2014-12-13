@@ -2,7 +2,7 @@
 class answerDao extends Dao {
 	
 	public $table_name = 'answer';
-	private $fields = "id,zxid,userid,content";
+	private $fields = "id,zxid,userid,to_id,content,imagelist,p_time";
 	
 	public function add($data) {
 		$rel= $this->dao->db->build_key($data, $this->fields);
@@ -28,4 +28,21 @@ class answerDao extends Dao {
 	public function getByField($cond) {
 		return $this->dao->db->get_all($this->table_name,20,0,$cond);
 	}
+
+        public function getAnsByZxid($zxid,$lasttime){
+                $sql="SELECT * FROM `answer` where zxid={$zxid}";
+                if($lasttime) $sql.=" and p_time >{$lasttime}";
+                return $this->dao->db->get_all_sql($sql);
+        }
+	
+        public function getNewAns($zxid){
+                $sql="SELECT * FROM `answer` where zxid={$zxid} order by id desc limit 1";
+                return $this->dao->db->get_all_sql($sql);
+        }
+
+        public function getBySql($sql){
+                return $this->dao->db->get_all_sql($sql);
+        }
+	
+
 }

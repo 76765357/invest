@@ -4,7 +4,9 @@
 
 		<?php require( TEMPLATE_PATH . 'header.tpl.html'); ?>
 
-		<?php require( TEMPLATE_PATH . 'nav.tpl.html'); ?>
+		<!--{layout:nav}-->
+		
+
 		<div class="container-fluid">
 			<div class="row-fluid">
 				
@@ -21,8 +23,10 @@
 					<!-- content starts -->
 	    			<?php
 					    	$main_file = TEMPLATE_PATH . $action.'.tpl.html';
-					    	include( $main_file );
+						include( $main_file );
 					?>
+					
+					
 
 					<!-- content ends -->
 				</div><!--/#content.span10-->

@@ -1,11 +1,13 @@
-<?php  if (!defined("IS_INITPHP")) exit("Access Denied!");  /* INITPHP Version 1.0 ,Create on 2014-10-24 05:20:45, compiled from ../../app/web/template/admin_index.tpl.html */ ?>
+<?php  if (!defined("IS_INITPHP")) exit("Access Denied!");  /* INITPHP Version 1.0 ,Create on 2014-12-13 14:23:02, compiled from ../../app/web/template/admin_index.tpl.html */ ?>
 <!DOCTYPE html>
 <html lang="en">
 <body>
 
 		<?php require( TEMPLATE_PATH . 'header.tpl.html'); ?>
 
-		<?php require( TEMPLATE_PATH . 'nav.tpl.html'); ?>
+		<?php include('../../app/data/template_c/nav.tpl.php'); ?>
+		
+
 		<div class="container-fluid">
 			<div class="row-fluid">
 				
@@ -22,8 +24,10 @@
 					<!-- content starts -->
 	    			<?php
 					    	$main_file = TEMPLATE_PATH . $action.'.tpl.html';
-					    	include( $main_file );
+						include( $main_file );
 					?>
+					
+					
 
 					<!-- content ends -->
 				</div><!--/#content.span10-->
